@@ -16,8 +16,9 @@ def add_note(notes):
             print("内容不能为空")
             continue
         break
-    add_tag = input("请输入标签(可以用逗号分隔且留空):").strip()  #去掉空格，净化列表
-    tags = [t.strip() for t in add_tag.strip(" ，") if t.strip()]
+    add_tag = input("请输入标签(用逗号分隔，可留空):").strip()
+    add_tag = add_tag.replace("，", ",")  # 中文逗号统一成英文
+    tags = [t.strip() for t in add_tag.split(",") if t.strip()]
     new_id = max((n['id'] for n in notes),default=0)+1
     new_note = {"id":new_id,
                 "title":add_title,
@@ -33,7 +34,15 @@ def view_notes(notes):
         return
     for note in notes:
         tags_str = "、".join(note['tags']) if note['tags'] else "-"
-        print(f"ID:{note['id']},标题:{note['title']},内容:{note['content']},标签:{tags_str}")
+        content = note["content"]
+        if len(content) > 40:
+            content = content[:40] + "..."
+        print("-"*40)
+        print(f"ID:{note['id']}")
+        print(f"标题:{note['title']}")
+        print(f"内容:{content}")
+        print(f"标签:{tags_str}")
+        print("-"*40)
 
 
 def search_notes(notes):
@@ -46,7 +55,12 @@ def search_notes(notes):
         if search_title == note['title']:
             print("查找成功")
             tags_str = "、".join(note["tags"]) if note["tags"] else "-"
-            print(f"ID:{note['id']},标题:{note['title']},内容:{note['content']},标签:{tags_str}")
+            print("-" * 40)
+            print(f"ID:{note['id']}")
+            print(f"标题:{note['title']}")
+            print(f"内容:{note['content']}")
+            print(f"标签:{tags_str}")
+            print("-" * 40)
             found = True
             break
     if not found:
@@ -54,10 +68,10 @@ def search_notes(notes):
 
 
 def delete_note(notes):
-    print("\n--- 删除记录 ---")
-    content = input("输入要删除的标题：").strip()
+    print("\n--- 删除笔记 ---")
+    target_title = input("输入要删除的标题：").strip()
     for n, note in enumerate(notes):
-        if note["content"] == content:
+        if note['title'] == target_title:
             notes.pop(n)
             print("删除成功")
             return

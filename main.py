@@ -44,7 +44,6 @@ def ask_ai(notes,history):
     history.append({"role":"assistant","content":reply})
 
 
-
 def main():
     notes_filename = "data/notes.json"
     history_filename = "data/chat_history.json"
